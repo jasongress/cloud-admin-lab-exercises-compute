@@ -218,7 +218,7 @@ az vm list-ip-addresses -g lab-compute-vm01-rg -n dev-tool-vm -o table
 Then let the graded check confirm everything at once:
 
 ```bash
-scripts/validate-question.sh 1
+./validate.bash
 ```
 
 ---

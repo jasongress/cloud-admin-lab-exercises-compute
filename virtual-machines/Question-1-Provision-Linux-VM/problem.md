@@ -30,16 +30,18 @@ Your solution is complete when all of the following are true:
 
 ## Before you start
 
+Work from **inside this question's folder** (`cd` into it). Then:
+
 ```bash
 az login          # authenticate the CLI to your subscription
 az account show   # confirm which subscription you're pointed at
+./setup.bash           # optional: checks your environment and prints your target
 ```
 
 ## When you think you're done
 
 ```bash
-# from the repo root
-scripts/validate-question.sh 1
+./validate.bash
 ```
 
 Stuck? Open [`solution.md`](solution.md) — it walks through **how a cloud
@@ -48,5 +50,5 @@ administrator reasons about this problem**, not just the final command.
 ## Clean up (avoid surprise charges)
 
 ```bash
-scripts/cleanup-question.sh 1
+./cleanup.bash
 ```

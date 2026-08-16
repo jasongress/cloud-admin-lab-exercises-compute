@@ -47,6 +47,13 @@ check() {
   fi
 }
 
+# Helper: is the VM powered on? (clean single-quoted JMESPath — the reliable form)
+vm_running() {
+  [[ "$(az vm get-instance-view -g "$RG" -n "$VM" \
+        --query "instanceView.statuses[?starts_with(code, 'PowerState/')].code | [0]" \
+        -o tsv 2>/dev/null)" == "PowerState/running" ]]
+}
+
 echo "======================================================"
 echo " Validating Question 1: Provision a Linux VM"
 echo "   Resource group: $RG   |   VM: $VM"
@@ -85,13 +92,12 @@ check "Password authentication is disabled (SSH key)" \
   bash -c '[[ "$(az vm show -g "$RG" -n "$VM" --query osProfile.linuxConfiguration.disablePasswordAuthentication -o tsv 2>/dev/null)" == "true" ]]'
 
 # 9. VM power state is running
-check "VM power state is running" \
-  bash -c '[[ "$(az vm get-instance-view -g "$RG" -n "$VM" --query "instanceView.statuses[?starts_with(code, \`PowerState/\`)].code | [0]" -o tsv 2>/dev/null)" == "PowerState/running" ]]'
+check "VM power state is running" vm_running
 
 echo ""
 echo "Results: $PASS/$TOTAL passed, $FAIL failed"
 if [[ $FAIL -eq 0 ]]; then
-  echo "All checks passed! Don't forget to clean up: scripts/cleanup-question.sh 1"
+  echo "All checks passed! Don't forget to clean up: ./cleanup.bash"
 else
   echo "Some checks failed. Check the FAIL lines above, or read solution.md."
 fi

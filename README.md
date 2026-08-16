@@ -91,7 +91,8 @@ cd cloud-admin-lab-exercises-compute
 **6. You're ready** — start the first question:
 
 ```bash
-scripts/run-question.sh 1
+cd virtual-machines/Question-1-Provision-Linux-VM
+./setup.bash        # then read problem.md and solve it
 ```
 
 > ⚠️ **Cost warning.** These labs create **real Azure resources that cost real
@@ -106,38 +107,41 @@ scripts/run-question.sh 1
 
 ## How each question is structured
 
-Every graded question lives in its own folder with five files:
+Every graded question lives in its own **self-contained folder** with five files:
 
 | File | What it is |
 |------|-----------|
-| `setup.bash`   | Prepares/pre-checks the environment for the question. |
-| `problem.md`   | The scenario and the exact requirements ("done" criteria). |
-| `validate.bash`| Automated PASS/FAIL checks against your subscription. |
-| `solution.md`  | A detailed walkthrough of **how an admin reasons about it** — read this if you get stuck. |
-| `cleanup.bash` | Deletes everything the question created. |
+| `setup.bash`      | Prepares/pre-checks the environment for the question. |
+| `problem.md` | The scenario and the exact requirements ("done" criteria). |
+| `validate.bash`   | Automated PASS/FAIL checks against your subscription. |
+| `solution.md`| A detailed walkthrough of **how an admin reasons about it** — read this if you get stuck. |
+| `cleanup.bash`    | Deletes everything the question created. |
 
-All scripts are open source — read them. Seeing how a check maps to an
-`az ... --query` is good practice in itself.
+`setup.bash`, `validate.bash`, and `cleanup.bash` are executable scripts you run **from inside
+the question folder** — no central runner, no question numbers to remember. All
+scripts are open source: read them. Seeing how a check maps to an `az ... --query`
+is good practice in itself.
 
 ## The workflow
 
+Everything happens **inside a single question folder** — `cd` into it and go:
+
 ```bash
-# 1. Start a question (runs setup, prints the problem)
-scripts/run-question.sh 1
+cd virtual-machines/Question-1-Provision-Linux-VM
 
-# 2. Solve it yourself with the Azure CLI.
-#    Stuck? Open the question's solution.md.
+./setup.bash       # 1. Prepare/preflight the environment (and, where relevant, provision the starting VM)
 
-# 3. Check your work
-scripts/validate-question.sh 1
+# 2. Read problem.md and solve it yourself with the Azure CLI.
+#    Stuck? Open solution.md in the same folder.
 
-# 4. Clean up (delete the resources so they stop costing money)
-scripts/cleanup-question.sh 1
+./validate.bash    # 3. Check your work — prints PASS/FAIL for each requirement
+
+./cleanup.bash     # 4. Delete the resources so they stop costing money
 ```
 
-You can pass a **number** (`1`) or the **folder name**
-(`Question-1-Provision-Linux-VM`) to any of the three scripts. Use `all` with
-validate/cleanup to sweep every question.
+That's the whole model: one folder, three commands (`./setup.bash`, `./validate.bash`,
+`./cleanup.bash`). Because each folder is self-contained, adding new topics (App
+Services, containers, …) never changes how you run anything.
 
 ## Configuration — make it yours
 
@@ -147,7 +151,7 @@ from you or lacks quota, change it there once and every script follows. You can
 also override per run:
 
 ```bash
-LAB_LOCATION=westeurope scripts/validate-question.sh 1
+LAB_LOCATION=westeurope ./validate.bash
 ```
 
 ## The practice mindset (why solutions are given freely)
@@ -161,8 +165,21 @@ the answer when you don't already have it.
 
 ## Available questions
 
-| # | Topic | Resource |
-|---|-------|----------|
-| 1 | Provision a Linux VM | Virtual Machines |
+| # | Topic | Skill |
+|---|-------|-------|
+| 1 | Provision a Linux VM | Create a resource group + Ubuntu 26.04 VM from scratch |
+| 2 | Open a Port with an NSG | Diagnose closed connectivity; add an inbound rule |
+| 3 | Resize a VM | Discover valid sizes; resize in place |
+| 4 | Attach a Data Disk | Create + attach a managed data disk |
+| 5 | Deallocate a VM | Stop compute billing (Stopped vs Deallocated) |
+| 6 | Provision with a Provisioner Script | cloud-init installs nginx on first boot; curl the public IP |
 
-*(More questions are on the way as this lab grows.)*
+*Graded questions come with full `solution.md` walkthroughs.*
+
+### Practice exercises (drill your skills)
+
+Once you've worked the graded questions, drill the
+[**10 practice exercises**](virtual-machines/practice/exercises.md) — problem
+statements only, no walkthroughs, spanning all six skills plus a few stretches
+(Windows + RDP, disk snapshots, Docker on boot). They're your reps for building
+muscle memory, just like the exercises at the back of a textbook.
