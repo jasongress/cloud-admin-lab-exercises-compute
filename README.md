@@ -1,7 +1,7 @@
 # Hands-on Lab Exercises — Azure Compute
 
-> **Topic:** Provisioning and managing Azure compute resources (starting with
-> Virtual Machines).
+> **Topic:** Provisioning and managing Azure compute resources — **Virtual
+> Machines** (IaaS) and **App Service** (PaaS).
 
 Welcome. These labs exist to turn you into a **Cloud Administrator** — someone
 who *manages, maintains, and secures* a company's cloud environment. Not someone
@@ -26,9 +26,10 @@ break them in production.
 
 ## Prerequisites
 
-- **Azure subscription** — a **paid** (pay-as-you-go) subscription is assumed.
-  The labs use general-purpose VM sizes that free-tier accounts often can't
-  provision.
+- **Azure subscription** — an [**Azure for Students**](https://azure.microsoft.com/free/students/)
+  subscription (the **$100 credit**, no credit card required) is all you need. The
+  labs deliberately use small **burstable B-series** VM sizes that fit a student
+  subscription's quota and budget.
 - A **lab VM** to work from (set it up below). The Azure CLI runs *there*, not on
   your laptop.
 
@@ -51,7 +52,7 @@ az vm create \
   --resource-group lab-jumpbox-rg \
   --name           lab-jumpbox \
   --image          Canonical:ubuntu-26_04-lts:server:latest \
-  --size           Standard_D2s_v3 \
+  --size           Standard_B2s \
   --admin-username azureuser \
   --generate-ssh-keys
 ```
@@ -91,16 +92,17 @@ cd cloud-admin-lab-exercises-compute
 **6. You're ready** — start the first question:
 
 ```bash
-cd virtual-machines/Question-1-Provision-Linux-VM
+cd 1-virtual-machines/Question-1-Provision-Linux-VM
 ./setup.bash        # then read problem.md and solve it
 ```
 
-> ⚠️ **Cost warning.** These labs create **real Azure resources that cost real
-> money** — including the lab VM itself. Exercises use modest, widely-available
-> general-purpose sizes (e.g. `Standard_D2s_v3`), and each question is isolated in
-> its own resource group so you can wipe it in one command. Bill by the minute:
-> provision, solve, validate, then **always run the cleanup step when you finish a
-> question.** When you're completely done, delete the lab VM too:
+> ⚠️ **Cost & credit warning.** These labs create **real Azure resources** that
+> draw down your credit — including the lab VM itself. They use small burstable
+> sizes (`Standard_B2s` and friends) chosen to fit the **Azure for Students** $100
+> budget and quota, and each question is isolated in its own resource group so you
+> can wipe it in one command. You're billed by the minute, so the golden rule is:
+> provision, solve, validate, then **run the cleanup step the moment you finish a
+> question.** When you're done for the day, delete the lab VM too:
 > ```bash
 > az group delete -n lab-jumpbox-rg --yes --no-wait
 > ```
@@ -127,7 +129,7 @@ is good practice in itself.
 Everything happens **inside a single question folder** — `cd` into it and go:
 
 ```bash
-cd virtual-machines/Question-1-Provision-Linux-VM
+cd 1-virtual-machines/Question-1-Provision-Linux-VM
 
 ./setup.bash       # 1. Prepare/preflight the environment (and, where relevant, provision the starting VM)
 
@@ -140,8 +142,7 @@ cd virtual-machines/Question-1-Provision-Linux-VM
 ```
 
 That's the whole model: one folder, three commands (`./setup.bash`, `./validate.bash`,
-`./cleanup.bash`). Because each folder is self-contained, adding new topics (App
-Services, containers, …) never changes how you run anything.
+`./cleanup.bash`).
 
 ## Configuration — make it yours
 
@@ -165,6 +166,11 @@ the answer when you don't already have it.
 
 ## Available questions
 
+The lab is organized by **compute type**. Each folder below holds its own numbered
+questions and a `practice/` set — work them from inside each question folder.
+
+### [`1-virtual-machines/`](1-virtual-machines/) — Virtual Machines (IaaS)
+
 | # | Topic | Skill |
 |---|-------|-------|
 | 1 | Provision a Linux VM | Create a resource group + Ubuntu 26.04 VM from scratch |
@@ -174,12 +180,21 @@ the answer when you don't already have it.
 | 5 | Deallocate a VM | Stop compute billing (Stopped vs Deallocated) |
 | 6 | Provision with a Provisioner Script | cloud-init installs nginx on first boot; curl the public IP |
 
-*Graded questions come with full `solution.md` walkthroughs.*
+Plus [**10 practice exercises**](1-virtual-machines/practice/exercises.md) (Windows
++ RDP, disk snapshots, Docker on boot, …).
 
-### Practice exercises (drill your skills)
+### [`2-app-services/`](2-app-services/) — App Service (PaaS)
 
-Once you've worked the graded questions, drill the
-[**10 practice exercises**](virtual-machines/practice/exercises.md) — problem
-statements only, no walkthroughs, spanning all six skills plus a few stretches
-(Windows + RDP, disk snapshots, Docker on boot). They're your reps for building
-muscle memory, just like the exercises at the back of a textbook.
+| # | Topic | Skill |
+|---|-------|-------|
+| 1 | Deploy a Web App | Create an App Service plan + web app on a runtime; curl it live |
+| 2 | Configure App Settings | Set application settings (env vars) without redeploying |
+| 3 | Scale Out | Run the app on 3 instances (scale out vs. scale up) |
+| 4 | Staging Slot + Swap | Zero-downtime release: deploy to a slot, then swap to production |
+
+Plus [**5 practice exercises**](2-app-services/practice/exercises.md) (other
+runtimes, deploy your own code, connection strings, scale up + Always On,
+HTTPS-only + log streaming).
+
+*Every graded question comes with a full `solution.md` walkthrough. Practice sets
+are problems only — your reps, like the exercises at the back of a textbook.*
