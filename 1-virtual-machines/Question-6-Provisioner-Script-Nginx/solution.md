@@ -68,7 +68,7 @@ are belt-and-suspenders so the requirement holds even if defaults change.
 
 ```bash
 # 1) Create the resource group
-az group create --name lab-compute-vm06-rg --location eastus
+az group create --name lab-compute-vm06-rg --location centralus
 
 # 2) Create the VM, handing your provisioner script to cloud-init
 az vm create \

@@ -21,9 +21,8 @@ back instantly.
 
 > **Slots require Standard tier or higher.** That's why `setup.bash` used `S1`.
 > Basic and Free have no slots. `S1` is the most expensive tier in these labs, so
-> it's especially important to run `./cleanup.bash` as soon as you're done —
-> your **Azure for Students** credit easily covers a short session, but not a plan
-> left running for days.
+> it's especially important to run `./cleanup.bash` as soon as you're done — a
+> Standard plan left running for days adds up.
 
 Reference: <https://learn.microsoft.com/azure/app-service/deploy-staging-slots>
 

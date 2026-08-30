@@ -1,8 +1,8 @@
 # Practice Exercises — App Service
 
-The "back of the book" for App Service: **questions only** — no `setup.bash`,
-`validate.bash`, or `solution.md`. The graded questions (1–4) were your worked
-examples; these are the reps.
+Practice problems for App Service: **questions only** — no `setup.bash`,
+`validate.bash`, or `solution.md`. The graded questions (1–4) walked you through
+the skills; these are the reps.
 
 Work them like any ticket:
 

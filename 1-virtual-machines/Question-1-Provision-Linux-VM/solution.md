@@ -41,7 +41,7 @@ knowing precisely what "done" looks like — you just wrote it down.
 Two facts aren't spelled out as flags but you still have to settle them:
 
 - **Where?** Every Azure resource lives in a region. This lab keeps the region
-  in `lab-config.sh` (`LAB_LOCATION`, default `eastus`) so every script agrees.
+  in `lab-config.sh` (`LAB_LOCATION`, default `centralus`) so every script agrees.
   Real admins pick a region for latency, cost, and data-residency reasons.
 - **What has to exist first?** In Azure a VM must live inside a **resource
   group**. Nothing here creates it for you, so that's step one. A resource
@@ -51,14 +51,15 @@ Two facts aren't spelled out as flags but you still have to settle them:
 Mental model: **create the box → put the VM in the box.**
 
 **A word on the size.** The problem hands you `Standard_B2s`, but understand
-*why*. It's a **burstable B-series** size (2 vCPU / 4 GB): inexpensive, and —
-crucially — the family that **Azure for Students** and other low-quota
-subscriptions can actually provision. Bigger families like the D-series often
-have a **vCPU quota of 0** on a student subscription, so `az vm create` for one
-fails outright with a quota error. Burstable sizes bank CPU credits while the VM
-is idle and spend them under load, which is a great fit for labs and light
-workloads. Rule of thumb: when a size won't create, suspect **quota** first —
-check yours with `az vm list-usage --location <region> -o table`.
+*why*. It's a **burstable B-series** size (2 vCPU / 4 GB): inexpensive, and among
+the **most widely-available sizes across Azure regions**. Bigger or specialized
+families are more often **capacity-constrained** — Azure replies `SkuNotAvailable`
+or an allocation error when a region is temporarily full of that size. Burstable
+sizes bank CPU credits while idle and spend them under load, a great fit for labs
+and light workloads. Rule of thumb: if a `create` fails, it's usually the
+**region's capacity**, not your account — try another region by changing
+`LAB_LOCATION` in `lab-config.sh` (`westus2`, `westus3`, `eastus2`, and
+`westeurope` are reliable alternates).
 
 ---
 
@@ -142,14 +143,14 @@ You discover each part with three `az vm image` sub-commands, narrowing as you g
 
 ```bash
 # 1) Publisher — Ubuntu images come from Canonical
-az vm image list-publishers --location eastus -o table | grep -i canonical
+az vm image list-publishers --location centralus -o table | grep -i canonical
 
 # 2) Offer — find the 26.04 LTS offer
-az vm image list-offers --publisher Canonical --location eastus -o table | grep -i 26
+az vm image list-offers --publisher Canonical --location centralus -o table | grep -i 26
 #   -> ubuntu-26_04-lts
 
 # 3) Sku — pick the plain server image (this is Gen2; 'server-gen1' is the old Gen1)
-az vm image list-skus --publisher Canonical --offer ubuntu-26_04-lts --location eastus -o table
+az vm image list-skus --publisher Canonical --offer ubuntu-26_04-lts --location centralus -o table
 #   -> server, server-gen1, minimal, ...
 ```
 
@@ -175,7 +176,7 @@ the box first:
 # 1) Create the resource group (the box). Region comes from lab-config.sh.
 az group create \
   --name lab-compute-vm01-rg \
-  --location eastus
+  --location centralus
 ```
 
 ```bash
@@ -235,7 +236,7 @@ fix. The common ones here:
 | `Please run 'az login'` | The CLI isn't authenticated | `az login`, then retry |
 | `ResourceGroupNotFound` | You skipped step 1, or misspelled the group | Create the group first; check the name matches exactly |
 | `The platform image ... is not available` / bad URN | A typo in the four-part URN, or wrong region | Re-run the Step-4b discovery commands and copy the parts exactly |
-| `SkuNotAvailable` / quota error for the size | `Standard_B2s` isn't offered in your region, or your student quota is exhausted | Change `LAB_LOCATION` in `lab-config.sh`, or pick another **B-series** size (`Standard_B1s`, `Standard_B2ms`) with `az vm list-sizes -l <region>` |
+| `SkuNotAvailable` / allocation error for the size | That size is temporarily out of capacity in your region (or not offered there) | Change `LAB_LOCATION` in `lab-config.sh` to another region (`westus2`, `westus3`, `eastus2`, `westeurope`) and retry; or pick another **B-series** size (`Standard_B1s`, `Standard_B2ms`) |
 | VM name/DNS already taken | The name collides with something existing | Delete the old resource or pick a clean region |
 
 A real admin's habit: when something breaks, write down *what* you saw and *how*

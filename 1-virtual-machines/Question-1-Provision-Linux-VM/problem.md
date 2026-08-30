@@ -24,7 +24,7 @@ Your solution is complete when all of the following are true:
 | 7 | The VM is **running** | power state `running` |
 
 > **Region:** the resource-group name and region come from `lab-config.sh` at the
-> repo root (default region `eastus`). If you changed `LAB_LOCATION` there, create
+> repo root (default region `centralus`). If you changed `LAB_LOCATION` there, create
 > your resources in that region — the validator reads the same file, so as long as
 > you and it agree, you're fine.
 

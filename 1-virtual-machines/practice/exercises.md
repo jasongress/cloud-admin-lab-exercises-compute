@@ -1,8 +1,8 @@
 # Practice Exercises — Virtual Machines
 
-These are the "back of the book" problems: **questions only** — no `setup.bash`,
-no `validate.bash`, no `solution.md`. The graded questions (1–6) gave you worked
-examples; these are the reps that turn understanding into muscle memory.
+These are practice problems: **questions only** — no `setup.bash`, no
+`validate.bash`, no `solution.md`. The graded questions (1–6) walked you through
+the skills; these are the reps that turn understanding into muscle memory.
 
 Work them the same way a cloud admin works any ticket:
 
@@ -48,7 +48,7 @@ what it's for.
 
 **Done when:**
 - A VM named `web-01` runs **Ubuntu 24.04 LTS** (find its image alias yourself).
-- Size is `Standard_B1s` (a small burstable size — the kind Azure for Students can provision).
+- Size is `Standard_B1s` (a small, widely-available burstable size).
 - The VM carries two **tags**: `env=practice` and `owner=<your-name>`.
 - Admin user `azureuser`, SSH-key auth.
 
@@ -83,7 +83,7 @@ workstation's IP**, not the whole internet.
 ## Exercise 4 — Resize for more memory
 
 A data-processing tool is running out of RAM, not CPU. Give it more memory —
-while staying inside what a student subscription can provision.
+while keeping to a small, widely-available size.
 
 **Done when:**
 - An existing `Standard_B2s` VM (2 vCPU / 4 GB) is resized to `Standard_B2ms`
@@ -91,7 +91,7 @@ while staying inside what a student subscription can provision.
   valid target first with `az vm list-vm-resize-options`.
 - The VM is **running** afterward.
 - You can explain (to yourself) when you'd reach for more memory vs. more vCPUs —
-  and why staying in the B-series matters on a low-quota account.
+  and why sticking to a widely-available family avoids capacity headaches.
 
 ---
 

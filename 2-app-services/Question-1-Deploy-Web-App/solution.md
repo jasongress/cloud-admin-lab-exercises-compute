@@ -38,9 +38,8 @@ Reference: <https://learn.microsoft.com/cli/azure/appservice/plan> and
 **Why not Free (F1)?** F1 is quota-limited, has no "Always On," can't scale out,
 and has no deployment slots — so later questions in this topic (scale-out, slot
 swaps) need at least Basic/Standard anyway. Basic (`B1`) costs only a couple of
-cents for a short lab session, and your **Azure for Students** credit covers it
-easily **as long as you run `./cleanup.bash` when you finish** — an App Service
-plan left running bills around the clock.
+cents for a short lab session — just remember to run `./cleanup.bash` when you
+finish, since an App Service plan left running bills around the clock.
 
 ---
 
@@ -61,7 +60,7 @@ Pick a current LTS, e.g. `NODE:22-lts`.
 
 ```bash
 # 1) The resource group (the box)
-az group create --name lab-compute-app01-rg --location eastus
+az group create --name lab-compute-app01-rg --location centralus
 
 # 2) The App Service plan (the rented compute). --is-linux picks Linux hosts.
 az appservice plan create \

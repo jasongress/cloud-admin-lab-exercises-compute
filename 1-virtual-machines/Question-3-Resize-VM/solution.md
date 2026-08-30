@@ -33,7 +33,7 @@ az vm list-vm-resize-options \
 
 ```bash
 # Or, more generally: what sizes exist in the region at all?
-az vm list-sizes --location eastus \
+az vm list-sizes --location centralus \
   --query "[?starts_with(name, 'Standard_B')].{name:name, vCPUs:numberOfCores, memMB:memoryInMb}" \
   -o table
 ```

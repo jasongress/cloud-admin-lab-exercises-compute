@@ -26,48 +26,71 @@ break them in production.
 
 ## Prerequisites
 
-- **Azure subscription** — an [**Azure for Students**](https://azure.microsoft.com/free/students/)
-  subscription (the **$100 credit**, no credit card required) is all you need. The
-  labs deliberately use small **burstable B-series** VM sizes that fit a student
-  subscription's quota and budget.
+- **Azure subscription** — a **paid** (pay-as-you-go) subscription. The labs use
+  small, inexpensive **burstable B-series** VM sizes, chosen because they're among
+  the most widely-available sizes across Azure regions.
 - A **lab VM** to work from (set it up below). The Azure CLI runs *there*, not on
   your laptop.
 
+> 🌍 **Region tip.** Azure capacity varies by region — a size that's full (or not
+> offered) in one region is usually available in another. If a `create` fails with
+> `SkuNotAvailable` or an allocation error, **just try a different region**: change
+> `LAB_LOCATION` in [`lab-config.sh`](lab-config.sh) and re-run. The default is
+> `centralus`; good alternates include `westus2`, `westus3`, `eastus2`,
+> `southcentralus`, `westeurope`, and `northeurope`.
+
 ## Set up your lab environment
 
-> ✅ **This lab is verified on Ubuntu 26.04 LTS Server — the recommended
-> environment.** Do the exercises from a dedicated Azure lab VM (a "jumpbox")
-> running Ubuntu 26.04. Working from a clean, disposable VM keeps your machine
-> tidy and matches how admins actually operate: from a managed box inside the
-> cloud.
+> ✅ **This lab is verified on Ubuntu 24.04 LTS Server — the recommended
+> environment for the jumpbox.** Do the exercises from a dedicated Azure lab VM
+> (a "jumpbox") running Ubuntu 24.04 — you'll set it up once and use it all
+> semester. Working from a clean, dedicated VM keeps your own machine tidy and
+> matches how admins actually operate: from a managed box inside the cloud.
+>
+> *(We use the 24.04 **LTS** for the jumpbox because the Azure CLI's package repo
+> fully supports it. The graded questions still have you provision Ubuntu 26.04
+> VMs — that's the exercise; the CLI on your jumpbox can create any OS version.)*
 
-**1. Provision the lab VM (Ubuntu 26.04).** You need the Azure CLI to create a
-VM, but you don't have it yet — so bootstrap this first VM from **[Azure Cloud
-Shell](https://shell.azure.com)** (the CLI is pre-installed there) or the Azure
-Portal. From Cloud Shell, run:
+**1. Provision the lab VM from the Azure Portal.** This first VM is your
+workbench — you'll run every exercise from it. Create it in the **Portal's GUI**
+([portal.azure.com](https://portal.azure.com) → **Create a resource** → **Virtual
+machine**). The Portal is the easiest way to make your very first VM, and it
+doesn't need the Azure CLI you haven't installed yet.
+
+Create a VM that meets these requirements — the exact size and names are your
+choice, as long as it satisfies each row:
+
+| Setting | Requirement |
+|---------|-------------|
+| **Image** | Ubuntu Server **24.04 LTS** (the Azure CLI installs cleanly on it) |
+| **Size** | at least **1 vCPU** and **4 GB RAM** — e.g. `Standard_B2als_v2` (2 vCPU / 4 GB) |
+| **Authentication type** | **Password** (simpler than SSH keys for a first login) |
+| **Username** | your choice (e.g. `azureuser`) |
+| **Password** | a strong password *you* set — note it down; you need it to log in |
+| **Public inbound ports** | allow **SSH (22)** so you can connect |
+| **Region** | **Central US** works well for this size; if `Standard_B2als_v2` isn't available there, try another location (see the Region tip above) |
+
+> Put it in its own resource group (e.g. `lab-jumpbox-rg`) — separate from the
+> per-question groups — so it's easy to find all semester and to delete in one
+> action once the course is over.
+
+**2. Connect to the lab VM.** Copy the VM's **Public IP address** from its
+**Overview** page in the Portal, then SSH in using the **password** you set:
 
 ```bash
-az group create -n lab-jumpbox-rg -l eastus
-az vm create \
-  --resource-group lab-jumpbox-rg \
-  --name           lab-jumpbox \
-  --image          Canonical:ubuntu-26_04-lts:server:latest \
-  --size           Standard_B2s \
-  --admin-username azureuser \
-  --generate-ssh-keys
+ssh <your-username>@<public-ip>
+# type your password when prompted
 ```
 
-**2. SSH into the lab VM** (use the `publicIpAddress` printed by the command
-above):
-
-```bash
-ssh azureuser@<publicIpAddress>
-```
+No SSH client handy? The Portal's **Connect → Native SSH** page shows the exact
+command, and **Connect → Bastion** lets you log in straight from the browser — no
+local SSH needed.
 
 **3. Install the Azure CLI on the lab VM.** On Ubuntu, one command does it:
 
 ```bash
 curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+az version    # confirm it installed
 ```
 
 - Azure CLI install (all platforms): <https://learn.microsoft.com/cli/azure/install-azure-cli>
@@ -96,16 +119,25 @@ cd 1-virtual-machines/Question-1-Provision-Linux-VM
 ./setup.bash        # then read problem.md and solve it
 ```
 
-> ⚠️ **Cost & credit warning.** These labs create **real Azure resources** that
-> draw down your credit — including the lab VM itself. They use small burstable
-> sizes (`Standard_B2s` and friends) chosen to fit the **Azure for Students** $100
-> budget and quota, and each question is isolated in its own resource group so you
-> can wipe it in one command. You're billed by the minute, so the golden rule is:
-> provision, solve, validate, then **run the cleanup step the moment you finish a
-> question.** When you're done for the day, delete the lab VM too:
+> ⚠️ **Cost warning.** These labs create **real Azure resources that cost real
+> money**. Each question is isolated in its own resource group, and they use small
+> burstable sizes (`Standard_B2s` and friends) that are cheap and widely available.
+> You're billed by the minute, so the golden rule for **question** resources is:
+> provision, solve, validate, then **run `./cleanup.bash` the moment you finish a
+> question.**
+
+> 💡 **Your lab VM is the exception — keep it for the whole semester; don't delete
+> it.** Just **stop (deallocate)** it when you're done for the day so it stops
+> charging for compute, and **Start** it again next time. Easiest way: in the
+> Portal, open the VM and click **Stop** — that *deallocates* it (compute billing
+> stops; you keep the VM and its disk). Or from any machine with the Azure CLI:
 > ```bash
-> az group delete -n lab-jumpbox-rg --yes --no-wait
+> az vm deallocate --resource-group lab-jumpbox-rg --name <your-vm-name>
 > ```
+> ⚠️ Do **not** "shut down" from inside the OS (`sudo poweroff`) — that leaves the
+> VM **Stopped (allocated)** and **still billing for compute** (the exact trap
+> you'll meet in Question 5). Only **delete** `lab-jumpbox-rg` at the **end of the
+> course**.
 
 ## How each question is structured
 
@@ -147,22 +179,27 @@ That's the whole model: one folder, three commands (`./setup.bash`, `./validate.
 ## Configuration — make it yours
 
 Shared settings live in [`lab-config.sh`](lab-config.sh) at the repo root — most
-importantly the **region** (`LAB_LOCATION`, default `eastus`). If eastus is far
-from you or lacks quota, change it there once and every script follows. You can
-also override per run:
+importantly the **region** (`LAB_LOCATION`, default `centralus`). If a region is far
+from you, lacks capacity for a size, or refuses a deployment, change it there once
+and every script follows. You can also override for a single run:
 
 ```bash
-LAB_LOCATION=westeurope ./validate.bash
+LAB_LOCATION=westus3 ./validate.bash
 ```
+
+**Hitting capacity or `SkuNotAvailable` errors?** That's a region-full situation,
+not a problem with your account — pick another region and retry. Reliable
+alternates: `westus2`, `westus3`, `eastus2`, `southcentralus`, `westeurope`,
+`northeurope`. Resources you already created stay where they are, so also delete
+any half-created resource group before retrying in a new region.
 
 ## The practice mindset (why solutions are given freely)
 
-Think of this like working through a math textbook: study the **worked example**
-(the graded questions with full `solution.md` walkthroughs), then drill the
-**exercises at the back of the book** (upcoming practice sets — problems only, no
-solutions) to build muscle memory and confidence. The point isn't to *know how*
-to provision a VM — it's to *prove* you can, and to build the habit of finding
-the answer when you don't already have it.
+First study the **worked examples** — the graded questions, each with a full
+`solution.md` walkthrough of how an admin reasons through the task. Then drill the
+**practice sets** (problems only, no solutions) to build muscle memory and
+confidence. The point isn't to *know how* to provision a VM — it's to *prove* you
+can, and to build the habit of finding the answer when you don't already have it.
 
 ## Available questions
 
@@ -197,4 +234,4 @@ runtimes, deploy your own code, connection strings, scale up + Always On,
 HTTPS-only + log streaming).
 
 *Every graded question comes with a full `solution.md` walkthrough. Practice sets
-are problems only — your reps, like the exercises at the back of a textbook.*
+are problems only — your reps for building muscle memory.*
