@@ -74,17 +74,32 @@ choice, as long as it satisfies each row:
 > per-question groups — so it's easy to find all semester and to delete in one
 > action once the course is over.
 
-**2. Connect to the lab VM.** Copy the VM's **Public IP address** from its
-**Overview** page in the Portal, then SSH in using the **password** you set:
+**2. Connect to the lab VM with VS Code.** The easiest way to work the labs is
+**VS Code Remote-SSH**: you get a file explorer, a rendered preview of each
+`problem.md` / `solution.md`, and a terminal — all running *on the jumpbox*.
 
-```bash
-ssh <your-username>@<public-ip>
-# type your password when prompted
-```
+> 📺 **New to Remote-SSH?** Watch [Connect VS Code to a remote server over SSH](https://www.youtube.com/watch?v=CDjqhAN5RqA),
+> or follow Microsoft's step-by-step [Remote-SSH tutorial](https://code.visualstudio.com/docs/remote/ssh-tutorial).
 
-No SSH client handy? The Portal's **Connect → Native SSH** page shows the exact
-command, and **Connect → Bastion** lets you log in straight from the browser — no
-local SSH needed.
+One-time setup on your own laptop:
+
+1. Install **[VS Code](https://code.visualstudio.com)**.
+2. In VS Code, open the Extensions view and install **Remote - SSH** (publisher:
+   Microsoft).
+
+Then connect — grab the VM's **Public IP** from its **Overview** page in the
+Portal, and:
+
+1. Press **F1** (or `Cmd/Ctrl+Shift+P`) → **Remote-SSH: Connect to Host…** →
+   **Add New SSH Host…** → enter `ssh <your-username>@<public-ip>` and save it to
+   your SSH config.
+2. Run **Remote-SSH: Connect to Host…** again, pick the host, and enter the
+   **password** you set. A new window opens, connected to the VM.
+3. Open a shell on the VM with **Terminal → New Terminal** — you'll run the next
+   steps there.
+
+> Prefer the command line? Plain `ssh <your-username>@<public-ip>` works too, as
+> does the Portal's **Connect → Bastion** (browser-based, no local SSH client).
 
 **3. Install the Azure CLI on the lab VM.** On Ubuntu, one command does it:
 
@@ -112,7 +127,11 @@ git clone https://github.com/sailplatform/cloud-admin-lab-exercises-compute.git
 cd cloud-admin-lab-exercises-compute
 ```
 
-**6. You're ready** — start the first question:
+**6. Open the repo in VS Code and start.** In VS Code, **File → Open Folder →**
+`cloud-admin-lab-exercises-compute`. Now you can browse every question in the
+explorer. Open a question's `problem.md` and hit the **preview** icon (top-right,
+or right-click → **Open Preview**) to read it nicely rendered — same for
+`solution.md`. Then run the scripts in the integrated terminal:
 
 ```bash
 cd 1-virtual-machines/Question-1-Provision-Linux-VM
