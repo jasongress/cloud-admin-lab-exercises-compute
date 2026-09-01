@@ -140,7 +140,7 @@ cd 1-virtual-machines/Question-1-Provision-Linux-VM
 
 > ⚠️ **Cost warning.** These labs create **real Azure resources that cost real
 > money**. Each question is isolated in its own resource group, and they use small
-> burstable sizes (`Standard_B2s` and friends) that are cheap and widely available.
+> burstable sizes (`Standard_B2als_v2` and friends) that are cheap and widely available.
 > You're billed by the minute, so the golden rule for **question** resources is:
 > provision, solve, validate, then **run `./cleanup.bash` the moment you finish a
 > question.**

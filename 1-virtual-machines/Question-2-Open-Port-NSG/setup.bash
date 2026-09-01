@@ -3,7 +3,7 @@
 #  setup.bash — Question 2: Open a Port with a Network Security Group
 # ============================================================================
 #  This question needs a VM to already exist so you can open a port ON it.
-#  So setup PROVISIONS that VM for you (Ubuntu 26.04, Standard_B2s), running,
+#  So setup PROVISIONS that VM for you (Ubuntu 26.04, Standard_B2als_v2), running,
 #  with only SSH open by default. Opening port 8080 is your job.
 #
 #  Provisioning creates real, billable resources and takes ~1-2 minutes.
@@ -44,12 +44,12 @@ az group create --name "$RG" --location "$LAB_LOCATION" --output none
 if az vm show -g "$RG" -n "$VM" --output none 2>/dev/null; then
   echo "  [OK] VM '$VM' already exists — reusing it."
 else
-  echo "  Provisioning VM '$VM' (Ubuntu 26.04, Standard_B2s)... this takes ~1-2 min."
+  echo "  Provisioning VM '$VM' (Ubuntu 26.04, Standard_B2als_v2)... this takes ~1-2 min."
   az vm create \
     --resource-group "$RG" \
     --name           "$VM" \
     --image          Canonical:ubuntu-26_04-lts:server:latest \
-    --size           Standard_B2s \
+    --size           Standard_B2als_v2 \
     --admin-username "$LAB_ADMIN_USER" \
     --generate-ssh-keys \
     --output none

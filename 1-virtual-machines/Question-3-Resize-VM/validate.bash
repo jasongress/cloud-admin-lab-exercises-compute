@@ -35,15 +35,15 @@ vm_running() {
 }
 
 echo "======================================================"
-echo " Validating Question 3: Resize to Standard_B2s"
+echo " Validating Question 3: Resize to Standard_B4als_v2"
 echo "   Resource group: $RG   |   VM: $VM"
 echo "======================================================"
 
 check "VM '$VM' exists in '$RG'" \
   az vm show -g "$RG" -n "$VM"
 
-check "VM size is Standard_B2s" \
-  bash -c '[[ "$(az vm show -g "$RG" -n "$VM" --query hardwareProfile.vmSize -o tsv 2>/dev/null)" == "Standard_B2s" ]]'
+check "VM size is Standard_B4als_v2" \
+  bash -c '[[ "$(az vm show -g "$RG" -n "$VM" --query hardwareProfile.vmSize -o tsv 2>/dev/null)" == "Standard_B4als_v2" ]]'
 
 check "VM power state is running" vm_running
 

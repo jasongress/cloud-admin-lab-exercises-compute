@@ -48,7 +48,7 @@ what it's for.
 
 **Done when:**
 - A VM named `web-01` runs **Ubuntu 24.04 LTS** (find its image alias yourself).
-- Size is `Standard_B1s` (a small, widely-available burstable size).
+- Size is `Standard_B2als_v2` (a small, widely-available burstable size).
 - The VM carries two **tags**: `env=practice` and `owner=<your-name>`.
 - Admin user `azureuser`, SSH-key auth.
 
@@ -86,7 +86,7 @@ A data-processing tool is running out of RAM, not CPU. Give it more memory —
 while keeping to a small, widely-available size.
 
 **Done when:**
-- An existing `Standard_B2s` VM (2 vCPU / 4 GB) is resized to `Standard_B2ms`
+- An existing `Standard_B2als_v2` VM (2 vCPU / 4 GB) is resized to `Standard_B2as_v2`
   (2 vCPU / **8 GB**) — same burstable family, double the RAM. Confirm it's a
   valid target first with `az vm list-vm-resize-options`.
 - The VM is **running** afterward.

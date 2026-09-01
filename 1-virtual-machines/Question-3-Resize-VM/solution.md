@@ -12,7 +12,7 @@ mid-change.
 | Keyword in the problem | Constraint |
 |------------------------|------------|
 | CPU-bound, needs more capacity | move to a bigger size |
-| Standard_B2s | the exact target size (2 vCPU / 4 GB) |
+| Standard_B4als_v2 | the exact target size (4 vCPU / 8 GB) |
 | keep it running | the VM should be `running` when you're done |
 
 The problem hands you the target, but in real life *you* choose it. So the first
@@ -38,11 +38,10 @@ az vm list-sizes --location centralus \
   -o table
 ```
 
-`Standard_B2s` is the same family (burstable **B-series**) as the current
-`Standard_B1s`, just one tier up — the safest kind of resize, because same-family
-moves rarely require special hardware and usually complete without surprises.
-Staying in the B-series also keeps you inside the vCPU quota an **Azure for
-Students** subscription actually grants. Reference:
+`Standard_B4als_v2` is the same family (burstable **B-series v2**) as the current
+`Standard_B2als_v2`, just a bigger tier — the safest kind of resize, because
+same-family moves rarely require special hardware and usually complete without
+surprises. Reference:
 <https://learn.microsoft.com/cli/azure/vm#az-vm-resize>
 
 ---
@@ -68,7 +67,7 @@ window in production. Here, just know that a reboot may happen.
 az vm resize \
   --resource-group lab-compute-vm03-rg \
   --name           dev-tool-vm \
-  --size           Standard_B2s
+  --size           Standard_B4als_v2
 ```
 
 `az vm resize` leaves the VM in its prior power state — since setup left it
@@ -81,7 +80,7 @@ leaves it stopped, `az vm start -g <rg> -n <vm>` brings it back.)
 
 ```bash
 az vm show -g lab-compute-vm03-rg -n dev-tool-vm \
-  --query hardwareProfile.vmSize -o tsv          # -> Standard_B2s
+  --query hardwareProfile.vmSize -o tsv          # -> Standard_B4als_v2
 
 az vm get-instance-view -g lab-compute-vm03-rg -n dev-tool-vm \
   --query "instanceView.statuses[?starts_with(code,'PowerState/')].displayStatus" -o tsv
@@ -111,7 +110,7 @@ availability first and knowing a reboot might happen, so nobody is surprised.
 |------|---------|
 | List valid in-place resize targets | `az vm list-vm-resize-options -g <rg> -n <vm> --query "[].name" -o table` |
 | List all sizes in a region | `az vm list-sizes -l <region> -o table` |
-| Resize | `az vm resize -g <rg> -n <vm> --size Standard_B2s` |
+| Resize | `az vm resize -g <rg> -n <vm> --size Standard_B4als_v2` |
 | Confirm size | `az vm show -g <rg> -n <vm> --query hardwareProfile.vmSize -o tsv` |
 | Start (if it came back stopped) | `az vm start -g <rg> -n <vm>` |
 

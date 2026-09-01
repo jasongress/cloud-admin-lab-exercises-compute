@@ -18,7 +18,7 @@ Your solution is complete when all of the following are true:
 | 1 | A **resource group** exists | name: `lab-compute-vm01-rg`, in your lab region |
 | 2 | A **virtual machine** exists in that resource group | name: `dev-tool-vm` |
 | 3 | The VM runs **Ubuntu 26.04 LTS** | Canonical, offer `ubuntu-26_04-lts` |
-| 4 | The VM **size** | `Standard_B2s` |
+| 4 | The VM **size** | `Standard_B2als_v2` |
 | 5 | The **admin username** | `azureuser` |
 | 6 | Authentication uses an **SSH key**, not a password | password auth disabled |
 | 7 | The VM is **running** | power state `running` |

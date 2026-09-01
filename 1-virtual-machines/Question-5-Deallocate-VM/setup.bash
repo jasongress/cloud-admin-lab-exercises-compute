@@ -2,7 +2,7 @@
 # ============================================================================
 #  setup.bash — Question 5: Deallocate a VM to stop paying for compute
 # ============================================================================
-#  Provisions dev-tool-vm (Ubuntu 26.04, Standard_B2s) in a RUNNING state so
+#  Provisions dev-tool-vm (Ubuntu 26.04, Standard_B2als_v2) in a RUNNING state so
 #  you have something to deallocate. Real, billable resources (~1-2 min).
 #  Re-runnable: if the VM exists but you left it deallocated from a prior run,
 #  this restarts it so you begin from a clean 'running' state.
@@ -40,12 +40,12 @@ if az vm show -g "$RG" -n "$VM" --output none 2>/dev/null; then
   echo "  [OK] VM '$VM' already exists — ensuring it's running to start clean."
   az vm start -g "$RG" -n "$VM" --output none 2>/dev/null || true
 else
-  echo "  Provisioning VM '$VM' (Ubuntu 26.04, Standard_B2s)... ~1-2 min."
+  echo "  Provisioning VM '$VM' (Ubuntu 26.04, Standard_B2als_v2)... ~1-2 min."
   az vm create \
     --resource-group "$RG" \
     --name           "$VM" \
     --image          Canonical:ubuntu-26_04-lts:server:latest \
-    --size           Standard_B2s \
+    --size           Standard_B2als_v2 \
     --admin-username "$LAB_ADMIN_USER" \
     --generate-ssh-keys \
     --output none

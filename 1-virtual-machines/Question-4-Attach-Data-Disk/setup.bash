@@ -2,7 +2,7 @@
 # ============================================================================
 #  setup.bash — Question 4: Attach a Data Disk
 # ============================================================================
-#  Provisions dev-tool-vm (Ubuntu 26.04, Standard_B2s) so you have a VM to
+#  Provisions dev-tool-vm (Ubuntu 26.04, Standard_B2als_v2) so you have a VM to
 #  attach a disk to. Creates real, billable resources (~1-2 min). Re-runnable.
 # ============================================================================
 set -uo pipefail
@@ -37,12 +37,12 @@ az group create --name "$RG" --location "$LAB_LOCATION" --output none
 if az vm show -g "$RG" -n "$VM" --output none 2>/dev/null; then
   echo "  [OK] VM '$VM' already exists — reusing it."
 else
-  echo "  Provisioning VM '$VM' (Ubuntu 26.04, Standard_B2s)... ~1-2 min."
+  echo "  Provisioning VM '$VM' (Ubuntu 26.04, Standard_B2als_v2)... ~1-2 min."
   az vm create \
     --resource-group "$RG" \
     --name           "$VM" \
     --image          Canonical:ubuntu-26_04-lts:server:latest \
-    --size           Standard_B2s \
+    --size           Standard_B2als_v2 \
     --admin-username "$LAB_ADMIN_USER" \
     --generate-ssh-keys \
     --output none

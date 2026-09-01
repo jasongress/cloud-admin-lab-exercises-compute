@@ -14,7 +14,7 @@ looking for **constraints** — the non-negotiable facts the finished resource
 must satisfy. Underline the nouns and adjectives:
 
 > Provision a **virtual machine**, running **Ubuntu 26.04 LTS**, size
-> **Standard_B2s**, admin user **azureuser**, using an **SSH key** (not a
+> **Standard_B2als_v2**, admin user **azureuser**, using an **SSH key** (not a
 > password), and leave it **running**, inside a **resource group** named
 > `lab-compute-vm01-rg`.
 
@@ -26,7 +26,7 @@ prose into a checklist:
 | resource group `lab-compute-vm01-rg` | a container you create first |
 | virtual machine `dev-tool-vm` | the thing you're provisioning |
 | Ubuntu 26.04 LTS | which OS image to pick |
-| Standard_B2s | the VM size (CPU/RAM tier) |
+| Standard_B2als_v2 | the VM size (CPU/RAM tier) |
 | azureuser | the admin username |
 | SSH key, not a password | the authentication method |
 | running | the expected end state |
@@ -50,7 +50,7 @@ Two facts aren't spelled out as flags but you still have to settle them:
 
 Mental model: **create the box → put the VM in the box.**
 
-**A word on the size.** The problem hands you `Standard_B2s`, but understand
+**A word on the size.** The problem hands you `Standard_B2als_v2`, but understand
 *why*. It's a **burstable B-series** size (2 vCPU / 4 GB): inexpensive, and among
 the **most widely-available sizes across Azure regions**. Bigger or specialized
 families are more often **capacity-constrained** — Azure replies `SkuNotAvailable`
@@ -109,7 +109,7 @@ Read it with two filters:
 | My constraint | Flag |
 |---------------|------|
 | Ubuntu 26.04 | `--image <URN>` (see Step 4b — no shortcut alias exists for 26.04) |
-| Standard_B2s | `--size Standard_B2s` |
+| Standard_B2als_v2 | `--size Standard_B2als_v2` |
 | azureuser | `--admin-username azureuser` |
 | SSH key, no password | `--generate-ssh-keys` (creates a keypair AND disables password login) |
 
@@ -163,7 +163,7 @@ Canonical:ubuntu-26_04-lts:server:latest
 
 That string goes straight into `--image`. You just did what the alias would have
 done — and now you can find *any* image, aliased or not. (The `server` SKU is
-Gen2, which is what modern sizes like `D2s_v3` expect.)
+Gen2, which is what current sizes like `Standard_B2als_v2` expect.)
 
 ---
 
@@ -185,7 +185,7 @@ az vm create \
   --resource-group lab-compute-vm01-rg \                 # which box
   --name           dev-tool-vm \                         # the VM's name
   --image          Canonical:ubuntu-26_04-lts:server:latest \  # Ubuntu 26.04 LTS (Gen2)
-  --size           Standard_B2s \                     # the CPU/RAM tier
+  --size           Standard_B2als_v2 \                     # the CPU/RAM tier
   --admin-username azureuser \                           # the login name
   --generate-ssh-keys                                    # SSH-key auth, password disabled
 ```
@@ -236,7 +236,7 @@ fix. The common ones here:
 | `Please run 'az login'` | The CLI isn't authenticated | `az login`, then retry |
 | `ResourceGroupNotFound` | You skipped step 1, or misspelled the group | Create the group first; check the name matches exactly |
 | `The platform image ... is not available` / bad URN | A typo in the four-part URN, or wrong region | Re-run the Step-4b discovery commands and copy the parts exactly |
-| `SkuNotAvailable` / allocation error for the size | That size is temporarily out of capacity in your region (or not offered there) | Change `LAB_LOCATION` in `lab-config.sh` to another region (`westus2`, `westus3`, `eastus2`, `westeurope`) and retry; or pick another **B-series** size (`Standard_B1s`, `Standard_B2ms`) |
+| `SkuNotAvailable` / allocation error for the size | That size is temporarily out of capacity in your region (or not offered there) | Change `LAB_LOCATION` in `lab-config.sh` to another region (`westus2`, `westus3`, `eastus2`, `westeurope`) and retry; or pick another **B-series v2** size (`Standard_B2ats_v2`, `Standard_B2as_v2`) |
 | VM name/DNS already taken | The name collides with something existing | Delete the old resource or pick a clean region |
 
 A real admin's habit: when something breaks, write down *what* you saw and *how*
@@ -252,7 +252,7 @@ you fixed it. That note is worth more next time than any memorised command.
 | Create a resource group | `az group create -n <rg> -l <region>` |
 | List image aliases | `az vm image list -o table` |
 | Find an image offer/sku | `az vm image list-offers --publisher Canonical -l <region>` / `... list-skus --offer <offer>` |
-| Create the VM | `az vm create -g <rg> -n <vm> --image Canonical:ubuntu-26_04-lts:server:latest --size Standard_B2s --admin-username azureuser --generate-ssh-keys` |
+| Create the VM | `az vm create -g <rg> -n <vm> --image Canonical:ubuntu-26_04-lts:server:latest --size Standard_B2als_v2 --admin-username azureuser --generate-ssh-keys` |
 | Inspect a VM | `az vm show -g <rg> -n <vm> -o jsonc` |
 | Check power state | `az vm get-instance-view -g <rg> -n <vm> --query "instanceView.statuses[?starts_with(code,'PowerState/')].displayStatus" -o tsv` |
 | Get the public IP | `az vm list-ip-addresses -g <rg> -n <vm> -o table` |

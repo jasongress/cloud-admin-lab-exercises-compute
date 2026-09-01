@@ -75,7 +75,7 @@ az vm create \
   --resource-group lab-compute-vm06-rg \
   --name           dev-tool-vm \
   --image          Canonical:ubuntu-26_04-lts:server:latest \
-  --size           Standard_B2s \
+  --size           Standard_B2als_v2 \
   --admin-username azureuser \
   --generate-ssh-keys \
   --custom-data    cloud-init.yaml        # <-- the provisioner script

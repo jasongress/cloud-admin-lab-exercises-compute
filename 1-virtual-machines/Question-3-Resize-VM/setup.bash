@@ -2,7 +2,7 @@
 # ============================================================================
 #  setup.bash — Question 3: Resize a VM
 # ============================================================================
-#  Provisions dev-tool-vm at the SMALLER size (Standard_B1s) so you have
+#  Provisions dev-tool-vm at the SMALLER size (Standard_B2als_v2) so you have
 #  something to resize. Creates real, billable resources (~1-2 min). Re-runnable.
 # ============================================================================
 set -uo pipefail
@@ -37,22 +37,22 @@ az group create --name "$RG" --location "$LAB_LOCATION" --output none
 if az vm show -g "$RG" -n "$VM" --output none 2>/dev/null; then
   echo "  [OK] VM '$VM' already exists — reusing it."
 else
-  echo "  Provisioning VM '$VM' at Standard_B1s (Ubuntu 26.04)... ~1-2 min."
+  echo "  Provisioning VM '$VM' at Standard_B2als_v2 (Ubuntu 26.04)... ~1-2 min."
   az vm create \
     --resource-group "$RG" \
     --name           "$VM" \
     --image          Canonical:ubuntu-26_04-lts:server:latest \
-    --size           Standard_B1s \
+    --size           Standard_B2als_v2 \
     --admin-username "$LAB_ADMIN_USER" \
     --generate-ssh-keys \
     --output none
-  echo "  [OK] VM provisioned and running (Standard_B1s)."
+  echo "  [OK] VM provisioned and running (Standard_B2als_v2)."
 fi
 
 echo "------------------------------------------------------"
 echo "   Resource group : ${RG}"
 echo "   VM name        : ${VM}"
-echo "   Current size   : Standard_B1s   ->   target: Standard_B2s"
-echo " Your task: resize the VM to Standard_B2s, keep it running."
+echo "   Current size   : Standard_B2als_v2   ->   target: Standard_B4als_v2"
+echo " Your task: resize the VM to Standard_B4als_v2, keep it running."
 echo " Validate with:  ./validate.bash"
 echo "======================================================"

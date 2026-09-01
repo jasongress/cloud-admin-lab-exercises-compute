@@ -16,7 +16,7 @@ provisioner script) is the whole exercise.
 
 | # | Requirement | Value |
 |---|-------------|-------|
-| 1 | A VM exists | `dev-tool-vm` in `lab-compute-vm06-rg`, Ubuntu 26.04, `Standard_B2s` |
+| 1 | A VM exists | `dev-tool-vm` in `lab-compute-vm06-rg`, Ubuntu 26.04, `Standard_B2als_v2` |
 | 2 | **nginx** is installed and running — placed there by a **provisioner script**, not by manual SSH | via cloud-init `--custom-data` |
 | 3 | Inbound **TCP 80** is open | access: Allow, direction: Inbound, port: 80 |
 | 4 | Curling the VM's public IP returns nginx | `curl http://<public-ip>` → HTTP 200, `Server: nginx` |

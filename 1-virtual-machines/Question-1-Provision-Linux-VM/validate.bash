@@ -67,9 +67,9 @@ check "Resource group '$RG' exists" \
 check "VM '$VM' exists in '$RG'" \
   az vm show -g "$RG" -n "$VM"
 
-# 3. Size is Standard_B2s
-check "VM size is Standard_B2s" \
-  bash -c '[[ "$(az vm show -g "$RG" -n "$VM" --query hardwareProfile.vmSize -o tsv 2>/dev/null)" == "Standard_B2s" ]]'
+# 3. Size is Standard_B2als_v2
+check "VM size is Standard_B2als_v2" \
+  bash -c '[[ "$(az vm show -g "$RG" -n "$VM" --query hardwareProfile.vmSize -o tsv 2>/dev/null)" == "Standard_B2als_v2" ]]'
 
 # 4. OS is Linux
 check "VM operating system is Linux" \
