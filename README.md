@@ -32,7 +32,7 @@ break them in production.
 - A **lab VM** to work from (set it up below). The Azure CLI runs *there*, not on
   your laptop.
 
-> 🌍 **Region tip.** Azure capacity varies by region — a size that's full (or not
+> **Region tip.** Azure capacity varies by region — a size that's full (or not
 > offered) in one region is usually available in another. If a `create` fails with
 > `SkuNotAvailable` or an allocation error, **just try a different region**: change
 > `LAB_LOCATION` in [`lab-config.sh`](lab-config.sh) and re-run. The default is
@@ -41,7 +41,7 @@ break them in production.
 
 ## Set up your lab environment
 
-> ✅ **This lab is verified on Ubuntu 24.04 LTS Server — the recommended
+> **This lab is verified on Ubuntu 24.04 LTS Server — the recommended
 > environment for the jumpbox.** Do the exercises from a dedicated Azure lab VM
 > (a "jumpbox") running Ubuntu 24.04 — you'll set it up once and use it all
 > semester. Working from a clean, dedicated VM keeps your own machine tidy and
@@ -78,7 +78,7 @@ choice, as long as it satisfies each row:
 **VS Code Remote-SSH**: you get a file explorer, a rendered preview of each
 `problem.md` / `solution.md`, and a terminal — all running *on the jumpbox*.
 
-> 📺 **New to Remote-SSH?** Watch [Connect VS Code to a remote server over SSH](https://www.youtube.com/watch?v=CDjqhAN5RqA),
+> **New to Remote-SSH?** Watch [Connect VS Code to a remote server over SSH](https://www.youtube.com/watch?v=CDjqhAN5RqA),
 > or follow Microsoft's step-by-step [Remote-SSH tutorial](https://code.visualstudio.com/docs/remote/ssh-tutorial).
 
 One-time setup on your own laptop:
@@ -138,14 +138,14 @@ cd 1-virtual-machines/Question-1-Provision-Linux-VM
 ./setup.bash        # then read problem.md and solve it
 ```
 
-> ⚠️ **Cost warning.** These labs create **real Azure resources that cost real
+> **Cost warning.** These labs create **real Azure resources that cost real
 > money**. Each question is isolated in its own resource group, and they use small
 > burstable sizes (`Standard_B2als_v2` and friends) that are cheap and widely available.
 > You're billed by the minute, so the golden rule for **question** resources is:
 > provision, solve, validate, then **run `./cleanup.bash` the moment you finish a
 > question.**
 
-> 💡 **Your lab VM is the exception — keep it for the whole semester; don't delete
+> **Your lab VM is the exception — keep it for the whole semester; don't delete
 > it.** Just **stop (deallocate)** it when you're done for the day so it stops
 > charging for compute, and **Start** it again next time. Easiest way: in the
 > Portal, open the VM and click **Stop** — that *deallocates* it (compute billing
@@ -153,7 +153,7 @@ cd 1-virtual-machines/Question-1-Provision-Linux-VM
 > ```bash
 > az vm deallocate --resource-group lab-jumpbox-rg --name <your-vm-name>
 > ```
-> ⚠️ Do **not** "shut down" from inside the OS (`sudo poweroff`) — that leaves the
+> Do **not** "shut down" from inside the OS (`sudo poweroff`) — that leaves the
 > VM **Stopped (allocated)** and **still billing for compute** (the exact trap
 > you'll meet in Question 5). Only **delete** `lab-jumpbox-rg` at the **end of the
 > course**.
