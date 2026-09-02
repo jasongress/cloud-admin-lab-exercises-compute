@@ -35,8 +35,20 @@ disk_field() {  # $1 = jmespath field to read for the disk named $DISK
     --query "storageProfile.dataDisks[?name=='$DISK'].$1 | [0]" -o tsv 2>/dev/null
 }
 disk_attached() { [[ -n "$(disk_field name)" ]]; }
-disk_is_32gib() { [[ "$(disk_field diskSizeGb)" == "32" ]]; }
 disk_is_managed() { [[ -n "$(disk_field managedDisk.id)" ]]; }
+# Size lives on the managed DISK resource, not the VM's inline dataDisks entry
+# (that field is often null for managed disks). Look the disk up by its resource
+# ID — the exact disk attached to the VM — so the disk's own name/RG don't matter.
+disk_is_32gib() {
+  local id gb
+  id="$(disk_field managedDisk.id)"
+  [[ -n "$id" ]] || return 1
+  # The size field's name/casing varies by CLI version — try GiB (both casings),
+  # then fall back to the byte count (32 GiB = 34359738368 bytes).
+  gb="$(az disk show --ids "$id" --query "diskSizeGb || diskSizeGB" -o tsv 2>/dev/null)"
+  [[ "$gb" == "32" ]] && return 0
+  [[ "$(az disk show --ids "$id" --query diskSizeBytes -o tsv 2>/dev/null)" == "34359738368" ]]
+}
 
 echo "======================================================"
 echo " Validating Question 4: Attach 32 GiB data disk '$DISK'"
