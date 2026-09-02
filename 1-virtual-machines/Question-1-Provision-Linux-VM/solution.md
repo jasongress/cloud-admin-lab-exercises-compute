@@ -4,7 +4,6 @@ Before you skip to the command at the bottom: the command is the *least*
 important thing here. Anyone can copy a command. What makes you a cloud
 administrator is the thinking that happens **before** you type it. That's what
 this walkthrough is really about.
-
 ---
 
 ## Step 1 — Read the problem like an admin

@@ -45,8 +45,9 @@ plan_is_linux_paid() {
 }
 app_exists() { [[ -n "$(app_name)" ]]; }
 app_runtime_node() {
-  local a; a="$(app_name)"; [[ -z "$a" ]] && return 1
-  az webapp config show -g "$RG" -n "$a" --query linuxFxVersion -o tsv 2>/dev/null | grep -qi '^NODE'
+  local a fx; a="$(app_name)"; [[ -z "$a" ]] && return 1
+  fx="$(az webapp config show -g "$RG" -n "$a" --query linuxFxVersion -o tsv 2>/dev/null)"
+  grep -qi '^NODE' <<<"$fx"
 }
 app_http_200() {
   local a host; a="$(app_name)"; [[ -z "$a" ]] && return 1

@@ -34,11 +34,16 @@ check() {
 # Robust across both ways of opening the port:
 #   - `az vm open-port`            -> sets destinationPortRange = "8080"
 #   - `az network nsg rule create` -> may set destinationPortRanges = ["8080"]
-# We list every inbound Allow rule in the RG's NSGs and look for 8080 in either field.
+# We query the two port fields SEPARATELY as scalars so `-o tsv` prints one clean
+# value per line. (A combined "[range, ranges]" projection renders unreliably in
+# tsv when one field is null, which can hide a perfectly valid rule.)
 port_8080_open() {
-  az network nsg list -g "$RG" \
-    --query "[].securityRules[?access=='Allow' && direction=='Inbound'].[destinationPortRange, destinationPortRanges]" \
-    -o tsv 2>/dev/null | grep -qw 8080
+  local base="[].securityRules[?access=='Allow' && direction=='Inbound']" out
+  out="$(
+    az network nsg list -g "$RG" --query "${base}.destinationPortRange"    -o tsv 2>/dev/null
+    az network nsg list -g "$RG" --query "${base}.destinationPortRanges[]" -o tsv 2>/dev/null
+  )"
+  grep -qw 8080 <<<"$out"
 }
 
 echo "======================================================"

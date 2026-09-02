@@ -38,11 +38,16 @@ public_ip() {
     --query "[0].virtualMachine.network.publicIpAddresses[0].ipAddress" -o tsv 2>/dev/null
 }
 
-# An inbound Allow rule opens TCP 80 (robust to both destinationPortRange and *Ranges)
+# An inbound Allow rule opens TCP 80. Query the two port fields SEPARATELY as
+# scalars so `-o tsv` prints one clean value per line — a combined
+# "[range, ranges]" projection renders unreliably in tsv when one field is null.
 port_80_open() {
-  az network nsg list -g "$RG" \
-    --query "[].securityRules[?access=='Allow' && direction=='Inbound'].[destinationPortRange, destinationPortRanges]" \
-    -o tsv 2>/dev/null | grep -qw 80
+  local base="[].securityRules[?access=='Allow' && direction=='Inbound']" out
+  out="$(
+    az network nsg list -g "$RG" --query "${base}.destinationPortRange"    -o tsv 2>/dev/null
+    az network nsg list -g "$RG" --query "${base}.destinationPortRanges[]" -o tsv 2>/dev/null
+  )"
+  grep -qw 80 <<<"$out"
 }
 
 # curl retries a few times so a just-finished cloud-init still passes.
@@ -54,9 +59,10 @@ http_200() {
 }
 
 nginx_serving() {
-  local ip; ip="$(public_ip)"; [[ -z "$ip" ]] && return 1
-  curl -s -I --retry 3 --retry-delay 3 --retry-connrefused --max-time 20 \
-       "http://$ip" 2>/dev/null | grep -qi '^Server:.*nginx'
+  local ip hdrs; ip="$(public_ip)"; [[ -z "$ip" ]] && return 1
+  hdrs="$(curl -s -I --retry 3 --retry-delay 3 --retry-connrefused --max-time 20 \
+              "http://$ip" 2>/dev/null)"
+  grep -qi '^Server:.*nginx' <<<"$hdrs"
 }
 
 echo "======================================================"
