@@ -38,10 +38,15 @@ app_name()  { az webapp list        -g "$RG" --query "[0].name" -o tsv 2>/dev/nu
 plan_exists() { [[ -n "$(plan_name)" ]]; }
 plan_is_linux_paid() {
   local p; p="$(plan_name)"; [[ -z "$p" ]] && return 1
-  local reserved tier
-  reserved="$(az appservice plan show -g "$RG" -n "$p" --query reserved  -o tsv 2>/dev/null)"
-  tier="$(az appservice plan show    -g "$RG" -n "$p" --query sku.tier -o tsv 2>/dev/null)"
-  [[ "$reserved" == "true" && -n "$tier" && "$tier" != "Free" && "$tier" != "Shared" ]]
+  # Read from `list`, NOT `show`: on some CLI versions `az appservice plan show`
+  # returns an empty `reserved` field, while `list` populates it (and `kind`).
+  local reserved kind tier
+  reserved="$(az appservice plan list -g "$RG" --query "[?name=='$p'].reserved | [0]" -o tsv 2>/dev/null)"
+  kind="$(az appservice plan list    -g "$RG" --query "[?name=='$p'].kind | [0]"     -o tsv 2>/dev/null)"
+  tier="$(az appservice plan list    -g "$RG" --query "[?name=='$p'].sku.tier | [0]" -o tsv 2>/dev/null)"
+  # Linux: reserved==true (any casing) OR kind contains 'linux'. Paid: tier not Free/Shared.
+  [[ ( "${reserved,,}" == "true" || "${kind,,}" == *linux* ) \
+     && -n "$tier" && "$tier" != "Free" && "$tier" != "Shared" ]]
 }
 app_exists() { [[ -n "$(app_name)" ]]; }
 app_runtime_node() {
