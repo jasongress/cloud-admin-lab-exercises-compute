@@ -20,14 +20,14 @@
 # ============================================================================
 
 # Azure region where all lab resources are created.
-export LAB_LOCATION="${LAB_LOCATION:-centralus}"
+export LAB_LOCATION="${LAB_LOCATION:-eastus}"
 
 # Prefix applied to every resource group this lab creates. Keeps lab resources
 # easy to spot in the portal and easy to delete when you're done.
 export LAB_RG_PREFIX="${LAB_RG_PREFIX:-lab-compute}"
 
 # Default admin username for Linux VMs created in this lab.
-export LAB_ADMIN_USER="${LAB_ADMIN_USER:-azureuser}"
+export LAB_ADMIN_USER="${LAB_ADMIN_USER:-gress}"
 
 # Build the resource-group name for a question from its short slug.
 #   lab_rg vm01   ->   lab-compute-vm01-rg

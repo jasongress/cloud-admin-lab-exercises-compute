@@ -1,0 +1,47 @@
+az vm image list --publisher Canonical --offer ubuntu-26_04-lts --sku server --all -l eastus -o table
+
+urn
+Canonical:ubuntu-26_04-lts:server:26.04.202604210
+
+az vm create \
+    -g lab-compute-vm01-rg \
+    -n dev-tool-vm \
+    --image Canonical:ubuntu-26_04-lts:server:latest \
+    --size Standard_B2als_v2 \
+    --admin-username gress \
+    --generate-ssh-keys
+
+az vm resize \
+    -g lab-compute-vm03-rg \
+    -n dev-tool-vm \
+    --size Standard_B4als_v2
+
+az vm disk attach \
+    -g lab-compute-vm04-rg \
+    --vm-name dev-tool-vm \
+    -n dev-tool-data \
+    --size-gb 32 \
+    --new
+
+az vm deallocate \
+    -g lab-compute-vm05-rg \
+    --vm-name dev-tool-vm \
+    --no-wait
+
+az group create -n lab-compute-vm06-rg -l eastus
+
+az vm create \
+    -g lab-compute-vm06-rg \
+    -n dev-tool-vm \
+    --image Canonical:ubuntu-26_04-lts:server:latest \
+    --size Standard_B2als_v2 \
+    --admin-username gress \
+    --generate-ssh-keys \
+    --custom-data setup.sh
+
+az vm open-port \
+    -g lab-compute-vm06-rg \
+    -n dev-tool-vm \
+    --port 80
+
+curl http://52.186.148.244 → HTTP 200, Server: nginx
