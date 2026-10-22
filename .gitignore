@@ -1,0 +1,57 @@
+## Directories
+.vault/
+/build/
+.*/
+
+## Dot files
+.env.test
+.env
+
+## Large files
+azure-command-cli-latest.pdf
+
+## Local Python files & directories
+.venv/
+__pycache__/
+*.pyc
+*.py[cod]
+*$py.class
+.env
+*-venv/
+*-env/
+submission_logs/
+.pytest_cache
+htmlcov
+.coverage
+
+## Local .terraform directories
+.terraform/
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+# Log files
+*.log
+crash.log
+crash.*.log
+
+# .tfvars files — often contain sensitive data
+*.tfvars
+*.tfvars.json
+
+# Override files — used for local dev overrides
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# CLI config
+.terraformrc
+terraform.rc
+
+# Other tf files
+.terraform.lock.hcl
+
+## CMU
+.sailconfig.json
