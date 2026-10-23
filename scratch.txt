@@ -1,47 +1,58 @@
-az vm image list --publisher Canonical --offer ubuntu-26_04-lts --sku server --all -l eastus -o table
+======================================================
+ App Service Q1 — Deploy a Web App
+======================================================
+  [OK] Azure CLI present and logged in.
+------------------------------------------------------
+ Your target:
+   Resource group : lab-compute-app01-rg
+   Region         : eastus
+   Plan           : Linux, a paid tier such as B1 (Basic)
+   Web app        : a globally-unique name, Node runtime (e.g. NODE:22-lts)
+ Your task: create the resource group, an App Service plan, and a web app,
+            then confirm it answers 200 at https://<name>.azurewebsites.net
+ Validate with:  ./validate.bash
+======================================================
 
-urn
-Canonical:ubuntu-26_04-lts:server:26.04.202604210
+az appservice plan create \
+    --name app01-plan \
+    -g lab-compute-app01-rg \
+    --sku B1 \
+    --is-linux \
+    -l eastus
 
-az vm create \
-    -g lab-compute-vm01-rg \
-    -n dev-tool-vm \
-    --image Canonical:ubuntu-26_04-lts:server:latest \
-    --size Standard_B2als_v2 \
-    --admin-username gress \
-    --generate-ssh-keys
+az webapp create \
+    --name app01-webapp-0987 \
+    -g lab-compute-app01-rg \
+    --plan app01-plan \
+    --runtime "NODE|24-lts"
 
-az vm resize \
-    -g lab-compute-vm03-rg \
-    -n dev-tool-vm \
-    --size Standard_B4als_v2
+az webapp config appsettings set \
+    -g lab-compute-app02-rg \
+    -n dev-tool-app-2440614902 \
+    --settings @dev-tool-app-2440614902-settings.json
 
-az vm disk attach \
-    -g lab-compute-vm04-rg \
-    --vm-name dev-tool-vm \
-    -n dev-tool-data \
-    --size-gb 32 \
-    --new
+az appservice plan update \
+  -g lab-compute-app03-rg \
+  -n dev-tool-plan \
+  --number-of-workers 3
 
-az vm deallocate \
-    -g lab-compute-vm05-rg \
-    --vm-name dev-tool-vm \
-    --no-wait
+az webapp deployment slot create \
+  -g lab-compute-app04-rg \
+  -n dev-tool-app-1920023309 \
+  --slot staging 
 
-az group create -n lab-compute-vm06-rg -l eastus
+az webapp config appsettings set \
+    -g lab-compute-app04-rg \
+    -n dev-tool-app-1920023309 \
+    --slot staging \
+    --settings @dev-tool-app-1920023309-settings.json
 
-az vm create \
-    -g lab-compute-vm06-rg \
-    -n dev-tool-vm \
-    --image Canonical:ubuntu-26_04-lts:server:latest \
-    --size Standard_B2als_v2 \
-    --admin-username gress \
-    --generate-ssh-keys \
-    --custom-data setup.sh
+az webapp config appsettings list \
+  -n dev-tool-app-1920023309 \
+  --slot staging \
+  -g lab-compute-app04-rg
 
-az vm open-port \
-    -g lab-compute-vm06-rg \
-    -n dev-tool-vm \
-    --port 80
-
-curl http://52.186.148.244 → HTTP 200, Server: nginx
+az webapp deployment slot swap \
+  --slot staging \
+  --name dev-tool-app-1920023309 \
+  -g lab-compute-app04-rg

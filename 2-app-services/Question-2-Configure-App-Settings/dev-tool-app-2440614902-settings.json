@@ -1,0 +1,10 @@
+[
+  {
+    "name": "ENVIRONMENT",
+    "value": "production"
+  },
+  {
+    "name": "FEATURE_FLAG",
+    "value": "beta"
+  }
+]
